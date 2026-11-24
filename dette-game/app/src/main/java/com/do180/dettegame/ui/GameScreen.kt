@@ -56,21 +56,22 @@ fun GameScreen(viewModel: GameViewModel) {
 
 @Composable
 private fun OngoingGame(state: GameState, onDecision: (Decision) -> Unit) {
-    Text(
-        text = "Année ${state.year} / ${state.mandateLength}",
-        style = MaterialTheme.typography.titleLarge,
-        fontWeight = FontWeight.Bold
-    )
-    Text(
-        text = "Objectif : ramener la dette sous 100 % du PIB en ${state.mandateLength} ans sans être renversé.",
-        style = MaterialTheme.typography.bodyMedium
-    )
-    Spacer(modifier = Modifier.height(12.dp))
+    Column(modifier = Modifier.fillMaxSize()) {
+        Text(
+            text = "Année ${state.year} / ${state.mandateLength}",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = "Objectif : ramener la dette sous 100 % du PIB en ${state.mandateLength} ans sans être renversé.",
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.height(12.dp))
 
-    LazyColumn(
-        modifier = Modifier.weight(1f),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
         item {
             IndicatorsCard(state)
         }
@@ -98,6 +99,7 @@ private fun OngoingGame(state: GameState, onDecision: (Decision) -> Unit) {
                     style = MaterialTheme.typography.bodySmall
                 )
             }
+        }
         }
     }
 }

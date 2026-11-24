@@ -2,7 +2,7 @@ package com.do180.dettegame.game
 
 import kotlin.random.Random
 
-class GameEngine(private val random: Random = Random()) {
+class GameEngine(private val random: Random = Random.Default) {
 
     fun newGame(): GameState = GameState(
         year = 1,
