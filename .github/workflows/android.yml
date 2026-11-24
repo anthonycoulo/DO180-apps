@@ -1,0 +1,57 @@
+name: Android build (dette-game)
+
+on:
+  push:
+    branches: [vibe/jeu-dette-587775]
+    paths:
+      - "dette-game/**"
+      - ".github/workflows/android.yml"
+  pull_request:
+    branches: [master]
+    paths:
+      - "dette-game/**"
+      - ".github/workflows/android.yml"
+
+jobs:
+  build:
+    name: Unit tests + debug APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Ensure Android SDK components (hosted runner ships the SDK)
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Generate Gradle wrapper (jar not committed)
+        working-directory: dette-game
+        run: gradle wrapper --gradle-version 8.7 --distribution-type bin
+
+      - name: Run unit tests
+        working-directory: dette-game
+        run: ./gradlew testDebugUnitTest --stacktrace
+
+      - name: Build debug APK
+        working-directory: dette-game
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Upload debug APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dette-game-debug-apk
+          path: dette-game/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 14
+          if-no-files-found: error
